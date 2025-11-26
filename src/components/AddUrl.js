@@ -30,27 +30,54 @@ function AddUrl() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError(''); // Clear any previous errors
 
-    if (urlCount >= 5) {
-      alert('You have already added 5 URLs. Please delete one to add more.');
+    // Input validation
+    if (!form.title.trim() || !form.originalUrl.trim()) {
+      setError('Please fill in all fields');
       return;
     }
 
-    const newUrl = {
-      id: Date.now(),
-      username: currentUser.username,
-      title: form.title,
-      originalUrl: form.originalUrl,
-      shortUrl: generateShortUrl(),
-      createdAt: new Date().toISOString()
-    };
+    // URL format validation
+    try {
+      new URL(form.originalUrl);
+    } catch (e) {
+      setError('Please enter a valid URL (e.g., https://example.com)');
+      return;
+    }
 
-    const allUrls = JSON.parse(localStorage.getItem('urls')) || [];
-    allUrls.push(newUrl);
-    localStorage.setItem('urls', JSON.stringify(allUrls));
+    if (urlCount >= 5) {
+      setError('You have already added 5 URLs. Please delete one to add more.');
+      return;
+    }
 
-    alert('URL added and shortened!');
-    navigate('/list');
+    try {
+      const newUrl = {
+        id: Date.now(),
+        username: currentUser.username,
+        title: form.title.trim(),
+        originalUrl: form.originalUrl.trim(),
+        shortUrl: generateShortUrl(),
+        createdAt: new Date().toISOString()
+      };
+
+      const allUrls = JSON.parse(localStorage.getItem('urls')) || [];
+      allUrls.push(newUrl);
+      localStorage.setItem('urls', JSON.stringify(allUrls));
+
+      // Clear the form and show success message
+      setForm({ title: '', originalUrl: '' });
+      setError('URL added and shortened! Redirecting...');
+      
+      // Navigate after a short delay to show success message
+      setTimeout(() => {
+        navigate('/list');
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error saving URL:', error);
+      setError('An error occurred while saving the URL. Please try again.');
+    }
   };
 
   return (
