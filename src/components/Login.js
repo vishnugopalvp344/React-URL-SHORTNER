@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 function Login() {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -8,7 +9,6 @@ function Login() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -25,14 +25,29 @@ function Login() {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="username" placeholder="Username" onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
-        <button type="submit">Login</button>
-      </form>
-      <p>Don't have an account? <a href="/signup">Signup here</a></p>
+    <div className="login-container">
+      <div className="login-card">
+        <h2>Welcome Back</h2>
+        <form onSubmit={handleSubmit} className="login-form">
+          <input 
+            name="username" 
+            placeholder="Username" 
+            onChange={handleChange} 
+            required 
+            className="login-input"
+          />
+          <input 
+            name="password" 
+            type="password" 
+            placeholder="Password" 
+            onChange={handleChange} 
+            required 
+            className="login-input"
+          />
+          <button type="submit" className="login-button">Login</button>
+        </form>
+        <p className="login-footer">Don't have an account? <a href="/signup" className="login-link">Signup here</a></p>
+      </div>
     </div>
   );
 }
